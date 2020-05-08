@@ -20,11 +20,18 @@ namespace TeamMVVM.ViewModel
         private string currentLastName = "Enter the last name";
         private ushort currentAge = 15;
         private double currentWeight = 55;
+        private int currentIndex;
 
         public ObservableCollection<PlayerVM> Players
         {
-            get { return players; }
-            set { players = value; }
+            get { 
+                if (players == null)
+                {
+                    players = new ObservableCollection<PlayerVM>();
+                    LoadPlayers();
+                }
+                return players;
+                }
         }
 
         public ushort[] AgeList
@@ -55,6 +62,12 @@ namespace TeamMVVM.ViewModel
         { 
             get { return currentWeight; } 
             set { currentWeight = value; } 
+        }
+
+        public int CurrentIndex
+        {
+            get { return currentIndex; }
+            set { currentIndex = value; }
         }
 
     }

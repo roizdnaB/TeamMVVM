@@ -15,7 +15,7 @@ namespace TeamMVVM.ViewModel
         
         public PlayerVM(PlayerModel player)
         {
-            player = representedPlayer;
+            representedPlayer = player;
         }
 
         public PlayerModel RepresentedPlayer { get { return representedPlayer; } }
@@ -42,6 +42,11 @@ namespace TeamMVVM.ViewModel
         {
             get { return representedPlayer.Weight; }
             set { representedPlayer.Weight = value; onPropertyChanged(nameof(Weight)); }
+        }
+
+        public override string ToString()
+        {
+            return representedPlayer.ToString();
         }
     }
 }

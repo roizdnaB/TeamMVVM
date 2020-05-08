@@ -4,8 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TeamMVVM"
+        
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:vm ="clr-namespace:TeamMVVM.ViewModel"
+        
         mc:Ignorable="d"
         Title="Team" Height="450" Width="600" ResizeMode="CanMinimize">
 
@@ -14,6 +16,7 @@
     </Window.Resources>
 
     <Grid x:Name="GridRoot" DataContext="{StaticResource mainVM}">
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.8*"/>
             <ColumnDefinition/>
@@ -22,13 +25,32 @@
         <WrapPanel Orientation="Vertical" Margin="25" Background="#FFCED1D1">
             
             <Label Content="Name:"/>
-            <TextBox Width="200" Height="20" Margin="4,0,0,0" ToolTip="Enter the first name of your player" Text="{Binding Path=CurrentFirstName, Mode=TwoWay}"/>
+            <TextBox Width="200" Height="20" Margin="4,0,0,0" ToolTip="Enter the first name of your player" 
+                     Text="{Binding Path=CurrentFirstName, Mode=TwoWay}">
 
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <i:InvokeCommandAction Command="{Binding ClearFirstName}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+            </TextBox>
+            
             <Label Content="Last Name:"/>
-            <TextBox Width="200" Height="20" Margin="4,0,0,0" ToolTip="Enter the last name of your player" Text="{Binding Path=CurrentLastName, Mode=TwoWay}"/>
+            <TextBox Width="200" Height="20" Margin="4,0,0,0" ToolTip="Enter the last name of your player"
+                     Text="{Binding Path=CurrentLastName, Mode=TwoWay}">
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <i:InvokeCommandAction Command="{Binding ClearLastName}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+            </TextBox>
 
             <Label Content="Age:"/>
-            <ComboBox Width="50" Height="20" HorizontalAlignment="Left" Margin="4,0,0,0" ToolTip="Choose the age of your player" ItemsSource="{Binding AgeList}" SelectedValue="{Binding Path=CurrentAge}"/>
+            <ComboBox Width="50" Height="20" HorizontalAlignment="Left" Margin="4,0,0,0" ToolTip="Choose the age of your player" 
+                      ItemsSource="{Binding AgeList}" SelectedValue="{Binding Path=CurrentAge}"/>
 
             <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 
@@ -41,22 +63,39 @@
             </WrapPanel>
 
             <Button Content="Add" Width="100" Margin="0,20,0,0" ToolTip="Add the player to the database" Command="{Binding AddPlayer}"/>
-            <Button Content="Modify" Width="100" Margin="0,10,0,0" ToolTip="Modify the selected player"/>
-            <Button Content="Delete" Width="100" Margin="0,10,0,0" ToolTip="Delete player from the database"/>
+            <Button Content="Modify" Width="100" Margin="0,10,0,0" ToolTip="Modify the selected player" Command="{Binding ModifyPlayer}"/>
+            <Button Content="Delete" Width="100" Margin="0,10,0,0" ToolTip="Delete player from the database" Command="{Binding DeletePlayer}"/>
 
         </WrapPanel>
 
-        <ListView Grid.Column="1" Margin="10" >
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" Width="93" DisplayMemberBinding="{Binding FirstName}"/>
-                    <GridViewColumn Header="Last Name" Width="100" DisplayMemberBinding="{Binding LastName}"/>
-                    <GridViewColumn Header="Age" Width="50" DisplayMemberBinding="{Binding Age}"/>
-                    <GridViewColumn Header="Weight" Width="50" DisplayMemberBinding="{Binding Weight}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <ListView Grid.Column="1" Margin="10" ItemsSource="{Binding Players}" SelectedIndex="{Binding CurrentIndex, Mode=TwoWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding FirstName}"/>
+                        <Label Content="{Binding LastName}"/>
+                        <Label Content="{Binding Age}"/>
+                        <Label Content="{Binding Weight}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
 
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="GotFocus">
+                    <i:InvokeCommandAction Command="{Binding LoadPlayer}"/>
+                </i:EventTrigger>
+
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding LoadPlayer}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListView>
     </Grid>
-        
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ElementName=GridRoot, Path=DataContext.SavePlayers}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
 </Window>
